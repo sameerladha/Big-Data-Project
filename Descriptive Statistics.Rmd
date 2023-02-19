@@ -12,6 +12,9 @@ When you click the **Knit** button a document will be generated that includes bo
 
 
 ```{r setup, include=FALSE}
+library(readr)
+library(dplyr)
+mental_heath_in_tech_2016_20161114 <- read_csv("mental-heath-in-tech-2016_20161114.csv")
 knitr::opts_chunk$set(echo = TRUE)
 wpmhdata <- mental_heath_in_tech_2016_20161114
 #DATA CLEANING
@@ -23,7 +26,7 @@ wpmhdata <- mental_heath_in_tech_2016_20161114
 wpmhdata <- subset(wpmhdata, select = -c(1,4,6,8,17,18,19,20,21,22,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,46,47,49,50,52,62))
 
 #renamed columns to make the data easier to read
-eztitles <- c('no_Employees', 'tech_nontech', 'benefits', 'employer_resources', 'anonymity_protected', 'leave', 'discussing_mh_negative', 'discussing_ph_negative', 'comfortable_coworker', 'comfortable_supervisor', 'physical_serious', 'consequences_discussed', 'productivity_affected', 'amount_productivity_affected', 'identifing_career', 'coworker_negative_view', 'share_f/f', 'bad_response_experience', 'see_others_reveal', 'current_disorder', 'diagnosed', 'treatment', 'interfere_treated', 'interferes_not_treated', 'age', 'sex', 'country_live','state_live', 'country_work', 'state_work', 'remote')
+eztitles <- c('no_Employees', 'tech_nontech', 'benefits', 'employer_resources', 'anonymity_protected', 'leave', 'discussing_mh_negative', 'discussing_ph_negative', 'comfortable_coworker', 'comfortable_supervisor', 'physical_serious', 'consequences_discussed', 'productivity_affected', 'amount_productivity_affected', 'identifing_career', 'coworker_negative_view', 'share_ff', 'bad_response_experience', 'see_others_reveal', 'current_disorder', 'diagnosed', 'treatment', 'interfere_treated', 'interferes_not_treated', 'age', 'sex', 'country_live','state_live', 'country_work', 'state_work', 'remote')
 colnames(wpmhdata) <- eztitles
 ```
 
@@ -32,6 +35,7 @@ colnames(wpmhdata) <- eztitles
 wpmhdata<- na_if(wpmhdata,'Not eligible for coverage / N/A')
 wpmhdata<- na_if(wpmhdata, "Not applicable to me")
 wpmhdata<- na_if(wpmhdata, "N/A")
+wpmhdata<- na_if(wpmhdata, "Not applicable to me (I do not have a mental illness)")
 ```
 
 ```{r}
@@ -74,14 +78,13 @@ wpmhdata$sex <- as.factor(wpmhdata$sex)
 wpmhdata$no_Employees <- as.factor(wpmhdata$no_Employees)
 wpmhdata$no_Employees <-ordered(wpmhdata$no_Employees, levels = c('1-5','6-25','26-100','100-500', '500-1000', 'More than 1000'))
 
-wpmhdata$amount_productivity_affected <- as.factor(wpmhdata$amount_productivity_affected)
-
 wpmhdata$tech_nontech <- as.factor(wpmhdata$tech_nontech)
-
-wpmhdata$treatment <- as.factor(wpmhdata$treatment)
 
 wpmhdata$benefits <- as.factor(wpmhdata$benefits)
 wpmhdata$benefits <-ordered(wpmhdata$benefits, levels = c('Yes', 'No', "I don't know"))
+
+wpmhdata$employer_resources <- as.factor(wpmhdata$employer_resources)
+wpmhdata$employer_resources <-ordered(wpmhdata$employer_resources, levels = c('Yes', 'No', "I don't know"))
 
 wpmhdata$anonymity_protected <- as.factor(wpmhdata$anonymity_protected)
 wpmhdata$anonymity_protected <-ordered(wpmhdata$anonymity_protected, levels = c('Yes', 'No', "I don't know"))
@@ -101,12 +104,45 @@ wpmhdata$comfortable_coworker <-ordered(wpmhdata$comfortable_coworker, levels = 
 wpmhdata$comfortable_supervisor <- as.factor(wpmhdata$comfortable_supervisor)
 wpmhdata$comfortable_supervisor <-ordered(wpmhdata$comfortable_supervisor, levels = c('Yes', 'Maybe', 'No'))
 
+wpmhdata$physical_serious <- as.factor(wpmhdata$physical_serious)
+wpmhdata$physical_serious <-ordered(wpmhdata$physical_serious, levels = c('Yes', 'Maybe', 'No'))
+
+wpmhdata$consequences_discussed <- as.factor(wpmhdata$consequences_discussed)
+wpmhdata$consequences_discussed <-ordered(wpmhdata$consequences_discussed, levels = c('Yes', 'Maybe', 'No'))
+
+wpmhdata$productivity_affected <- as.factor(wpmhdata$productivity_affected)
+wpmhdata$productivity_affected <-ordered(wpmhdata$productivity_affected, levels = c('Yes', 'Unsure', 'No'))
+
+wpmhdata$amount_productivity_affected <- as.factor(wpmhdata$amount_productivity_affected)
+
 wpmhdata$identifing_career <- as.factor(wpmhdata$identifing_career)
 wpmhdata$identifing_career <-ordered(wpmhdata$identifing_career, levels = c('Yes, it has', 'Yes, I think it would', 'Maybe', "No, I don't think it would", 'No, it has not'))
+
+wpmhdata$coworker_negative_view <- as.factor(wpmhdata$coworker_negative_view)
+wpmhdata$coworker_negative_view <-ordered(wpmhdata$coworker_negative_view, levels = c('Yes, they do', 'Yes, I think they would', 'Maybe', "No, I don't think they would", 'No, they do not'))
+
+wpmhdata$share_ff <- as.factor(wpmhdata$share_ff)
+wpmhdata$share_ff <-ordered(wpmhdata$share_ff, levels = c('Very open','Somewhat open','Neutral','Somewhat not open', 'Not open at all'))
+
+wpmhdata$bad_response_experience <- as.factor(wpmhdata$bad_response_experience)
+wpmhdata$bad_response_experience <-ordered(wpmhdata$bad_response_experience, levels = c('Yes, I experienced', 'Yes, I observed', 'Maybe/Not sure', "No"))
+
+wpmhdata$see_others_reveal <- as.factor(wpmhdata$see_others_reveal)
+wpmhdata$see_others_reveal <-ordered(wpmhdata$see_others_reveal, levels = c('Yes', 'Maybe', 'No'))
+
+wpmhdata$current_disorder <- as.factor(wpmhdata$current_disorder)
+wpmhdata$current_disorder <-ordered(wpmhdata$current_disorder, levels = c('Yes', 'Maybe', 'No'))
 
 wpmhdata$diagnosed <- as.factor(wpmhdata$diagnosed)
 wpmhdata$diagnosed <-ordered(wpmhdata$diagnosed, levels = c('Yes', 'Maybe', 'No'))
 
+wpmhdata$treatment <- as.factor(wpmhdata$treatment)
+
+wpmhdata$interfere_treated <- as.factor(wpmhdata$interfere_treated)
+wpmhdata$interfere_treated <-ordered(wpmhdata$interfere_treated, levels = c('Often', 'Sometimes', 'Rarely', 'Never'))
+
+wpmhdata$interferes_not_treated <- as.factor(wpmhdata$interferes_not_treated)
+wpmhdata$interferes_not_treated <-ordered(wpmhdata$interferes_not_treated, levels = c('Often', 'Sometimes', 'Rarely', 'Never'))
 
 wpmhdata$country_live <- as.factor(wpmhdata$country_live)
 
@@ -118,26 +154,30 @@ wpmhdata$state_work <- as.factor(wpmhdata$state_work)
 
 wpmhdata$remote<- as.factor(wpmhdata$remote)
 wpmhdata$remote <-ordered(wpmhdata$remote, levels = c('Always', 'Somtimes', 'Never'))
-
 ```
 
 
 ```{r}
 #Descriptive Statistics
+
+#An overview of the ages of participants
+boxplot(wpmhdata$age)
 summary(wpmhdata$age)
+hist(wpmhdata$age, xlab = "Age of Participants")
 
-summary(wpmhdata$sex)
+#An overview of the sex of participants
+plot(wpmhdata$sex, xlab = "Gender of the Participants")
 
-summary(wpmhdata$no_Employees)
+#An overview of the participants work field
+plot(wpmhdata$tech_nontech, xlab = "Do you work in a tech or non tech field?")
 
-summary(wpmhdata$tech_nontech)
+#An overview of the size of the companies
+plot(wpmhdata$no_Employees, xlab = "Number of Employees at Organization")
 
-summary(wpmhdata$amount_productivity_affected)
+#An overview of the number of remote employees
+plot(wpmhdata$remote, xlab = "How often do you work remotely?")
 
-summary(wpmhdata$treatment)
-
-summary(wpmhdata$diagnosed)
-
-summary(wpmhdata$remote)
+#An overview of the number of employees diagnosed with a mental illness
+plot(wpmhdata$diagnosed, xlab = "Are you diagnosed with a mental illness?")
 ```
 
