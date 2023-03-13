@@ -4,19 +4,18 @@ author: "Sameer Ladha"
 date: "2023-02-11"
 output: pdf_document
 ---
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-
-```{r setup, include=FALSE}
+```{r}
 library(readr)
 library(dplyr)
 mental_heath_in_tech_2016_20161114 <- read_csv("mental-heath-in-tech-2016_20161114.csv")
+data <-
 knitr::opts_chunk$set(echo = TRUE)
 wpmhdata <- mental_heath_in_tech_2016_20161114
+```
+
+```{r}
+
 #DATA CLEANING
 
 #negate in function for gender categories
@@ -179,5 +178,10 @@ plot(wpmhdata$remote, xlab = "How often do you work remotely?")
 
 #An overview of the number of employees diagnosed with a mental illness
 plot(wpmhdata$diagnosed, xlab = "Are you diagnosed with a mental illness?")
+```
+
+```{r}
+#exporting data to use in python
+write.csv(wpmhdata, "/Users/sameerladha/Documents/School/Data Science Certificate/CIND820/Code/wpmhdata.csv")
 ```
 
