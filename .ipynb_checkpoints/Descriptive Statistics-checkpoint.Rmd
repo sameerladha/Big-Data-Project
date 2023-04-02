@@ -9,6 +9,7 @@ output: pdf_document
 library(readr)
 library(dplyr)
 mental_heath_in_tech_2016_20161114 <- read_csv("mental-heath-in-tech-2016_20161114.csv")
+data <-
 knitr::opts_chunk$set(echo = TRUE)
 wpmhdata <- mental_heath_in_tech_2016_20161114
 ```
@@ -24,7 +25,7 @@ wpmhdata <- mental_heath_in_tech_2016_20161114
 wpmhdata <- subset(wpmhdata, select = -c(1,4,6,8,17,18,19,20,21,22,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,46,47,49,50,52,62))
 
 #renamed columns to make the data easier to read
-eztitles <- c('no_Employees', 'tech_nontech', 'benefits', 'employer_resources', 'anonymity_protected', 'leave', 'discussing_mh_negative', 'discussing_ph_negative', 'comfortable_coworker', 'comfortable_supervisor', 'physical_serious', 'consequences_discussed', 'productivity_affected', 'amount_productivity_affected', 'identifing_career', 'coworker_negative_view', 'share_ff', 'bad_response_experience', 'see_others_reveal', 'current_disorder', 'diagnosed', 'treatment', 'interfere_treated', 'interferes_not_treated', 'age', 'gender', 'country_live','state_live', 'country_work', 'state_work', 'remote')
+eztitles <- c('no_Employees', 'tech_nontech', 'benefits', 'employer_resources', 'anonymity_protected', 'leave', 'discussing_mh_negative', 'discussing_ph_negative', 'comfortable_coworker', 'comfortable_supervisor', 'physical_serious', 'consequences_discussed', 'productivity_affected', 'amount_productivity_affected', 'identifing_career', 'coworker_negative_view', 'share_ff', 'bad_response_experience', 'see_others_reveal', 'current_disorder', 'diagnosed', 'treatment', 'interfere_treated', 'interferes_not_treated', 'age', 'sex', 'country_live','state_live', 'country_work', 'state_work', 'remote')
 colnames(wpmhdata) <- eztitles
 ```
 
@@ -60,15 +61,15 @@ ogi <- c('AFAB', 'Agender', 'Androgynous', 'Bigender', 'Female or Multi-Gender F
 
 nb <- c('Nonbinary', 'Enby', 'non-binary', "nb masculine")
 
-genders <- c('Female','Male','Non-Binary','Other Gender Identity')
+gender <- c('Female','Male','Non-Binary','Other Gender Identity')
 
-wpmhdata$gender[wpmhdata$gender %in% female] <- 'Female'
-wpmhdata$gender[wpmhdata$gender %in% male] <- 'Male'
-wpmhdata$gender[wpmhdata$gender %in% nb] <- 'Non-Binary'
-wpmhdata$gender[wpmhdata$gender %in% ogi] <- 'Other Gender Identity'
-wpmhdata$gender[wpmhdata$gender %notin% genders] <- NA
+wpmhdata$sex[wpmhdata$sex %in% female] <- 'Female'
+wpmhdata$sex[wpmhdata$sex %in% male] <- 'Male'
+wpmhdata$sex[wpmhdata$sex %in% nb] <- 'Non-Binary'
+wpmhdata$sex[wpmhdata$sex %in% ogi] <- 'Other Gender Identity'
+wpmhdata$sex[wpmhdata$sex %notin% gender] <- NA
 
-wpmhdata$gender <- as.factor(wpmhdata$gender)
+wpmhdata$sex <- as.factor(wpmhdata$sex)
 ```
 
 ```{r}
@@ -164,7 +165,7 @@ summary(wpmhdata$age)
 hist(wpmhdata$age, xlab = "Age of Participants")
 
 #An overview of the sex of participants
-plot(wpmhdata$gender, xlab = "Gender of the Participants")
+plot(wpmhdata$sex, xlab = "Gender of the Participants")
 
 #An overview of the participants work field
 plot(wpmhdata$tech_nontech, xlab = "Do you work in a tech or non tech field?")
